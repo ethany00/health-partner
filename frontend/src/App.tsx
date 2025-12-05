@@ -6,6 +6,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Matching from './pages/matching/Matching';
 import Chat from './pages/chat/Chat';
+import ChatRoom from './pages/chat/ChatRoom';
 import Profile from './pages/profile/Profile';
 import { MobileLayout } from './components/layout/MobileLayout';
 import { BottomNavigation } from './components/common/BottomNavigation';
@@ -39,6 +40,14 @@ const AppContent = () => {
                         element={
                             <ProtectedRoute>
                                 <Chat />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/chat/:roomId"
+                        element={
+                            <ProtectedRoute>
+                                <ChatRoom />
                             </ProtectedRoute>
                         }
                     />
