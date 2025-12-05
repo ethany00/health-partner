@@ -18,49 +18,48 @@
 ## 🛠 기술 스택
 
 ### Frontend
-- **React** 18.x + **TypeScript**
-- **Tailwind CSS** - 스타일링
-- **Zustand** - 상태 관리
+- **React** 19.x + **TypeScript** - 최신 리액트
+- **Vite** 6.x - 초고속 빌드 툴
+- **Tailwind CSS** 4.x - 유틸리티 퍼스트 스타일링
+- **Zustand** - 가볍고 강력한 상태 관리
 - **Socket.io-client** - 실시간 통신
 - **React Router** - 라우팅
 
 ### Backend
-- **NestJS** - Node.js 프레임워크
-- **Socket.io** - 실시간 통신
-- **PostgreSQL** - 메인 데이터베이스
-- **Redis** - 캐싱 및 세션 관리
-- **Prisma** - ORM
-- **JWT** - 인증/인가
+- **NestJS** 11.x - 확장 가능한 Node.js 프레임워크
+- **Prisma** 5.x - 차세대 ORM (Type-safe)
+- **Socket.io** - 실시간 양방향 통신
+- **PostgreSQL** - 신뢰할 수 있는 관계형 DB
+- **Redis** - 고성능 캐싱 및 세션 스토어
+- **Passport/JWT** - 안전한 인증 시스템
 
 ### DevOps & Tools
-- **Docker** - 컨테이너화
-- **GitHub Actions** - CI/CD
-- **ESLint** + **Prettier** - 코드 품질
+- **Docker** - 컨테이너화 된 개발 환경
+- **ESLint** + **Prettier** - 클린 코드 유지
 
 ## 📁 프로젝트 구조
 
 ```
 health-partner-app/
-├── frontend/                # React 프론트엔드
+├── frontend/                # React + Vite 프론트엔드
 │   ├── src/
-│   │   ├── components/     # 재사용 가능한 컴포넌트
-│   │   ├── pages/          # 페이지 컴포넌트
-│   │   ├── hooks/          # 커스텀 훅
-│   │   ├── store/          # Zustand 스토어
-│   │   ├── services/       # API 서비스
-│   │   └── utils/          # 유틸리티 함수
+│   │   ├── components/     # UI 컴포넌트 (Common, Layout 등)
+│   │   ├── pages/          # 페이지 단위 컴포넌트
+│   │   ├── store/          # Zustand 전역 상태
+│   │   ├── services/       # API 통신 로직
+│   │   └── types/          # TypeScript 타입 정의
 │   └── package.json
 │
-├── backend/                 # NestJS 백엔드
+├── backend/                 # NestJS 백엔드 API
 │   ├── src/
-│   │   ├── auth/           # 인증 모듈
-│   │   ├── users/          # 사용자 모듈
-│   │   ├── matching/       # 매칭 모듈
-│   │   ├── chat/           # 채팅 모듈
-│   │   └── common/         # 공통 모듈
+│   │   ├── auth/           # 인증 (로그인/회원가입)
+│   │   ├── users/          # 사용자 정보 관리
+│   │   ├── matching/       # 파트너 매칭 알고리즘
+│   │   ├── chat/           # 실시간 채팅 Gateway
+│   │   └── common/         # 공통 모듈 (Prisma 등)
+│   ├── prisma/             # DB 스키마 및 마이그레이션
 │   └── package.json
 │
-├── docker-compose.yml       # Docker 설정
 └── README.md
 ```
 
@@ -68,63 +67,49 @@ health-partner-app/
 
 ### 사전 요구사항
 
-- Node.js 18.x 이상
-- npm 또는 yarn
-- PostgreSQL 14.x 이상
-- Redis 7.x 이상
+- Node.js 20.x 이상 권장
+- npm 또는 pnpm
+- PostgreSQL 실행 중 (로컬 또는 Docker)
 
 ### 설치 및 실행
 
 #### 1. 레포지토리 클론
 
 ```bash
-git clone https://github.com/your-username/health-partner-app.git
-cd health-partner-app
+git clone https://github.com/ethany00/health-partner.git
+cd health-partner
 ```
 
-#### 2. 환경 변수 설정
+#### 2. Backend 실행
 
-**Backend (.env)**
-```bash
-cd backend
-cp .env.example .env
-# .env 파일을 열어 필요한 값들을 설정하세요
-```
-
-**Frontend (.env)**
-```bash
-cd frontend
-cp .env.example .env
-# .env 파일을 열어 필요한 값들을 설정하세요
-```
-
-#### 3. 의존성 설치 및 실행
-
-**Backend**
 ```bash
 cd backend
 npm install
+
+# .env 파일 생성 및 DB 설정 필요
+# (예: DATABASE_URL="postgresql://user:password@localhost:5432/mydb")
+
+# Prisma Client 생성 (필수!)
+npx prisma generate
+
+# 서버 실행 (Port: 4000)
 npm run start:dev
 ```
 
-**Frontend**
+#### 3. Frontend 실행
+
 ```bash
 cd frontend
 npm install
+
+# 개발 서버 실행 (Port: 5173)
 npm run dev
-```
-
-#### 4. Docker로 실행 (선택사항)
-
-```bash
-docker-compose up -d
 ```
 
 ### 접속
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:4000
-- API 문서: http://localhost:4000/api/docs
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:4000/api
 
 ## 📱 주요 화면
 
