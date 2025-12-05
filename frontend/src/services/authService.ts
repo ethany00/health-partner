@@ -1,22 +1,15 @@
 import { api } from './api';
-import type { User } from '../types';
+import type { RegisterData, LoginData } from '../types';
 
 export const authService = {
-    login: async (email: string, password: string) => {
-        const response = await api.post<{ user: User; token: string }>('/auth/login', {
-            email,
-            password,
-        });
+    register: async (data: RegisterData) => {
+        // 백엔드에서 현재 User 객체만 반환함 (토큰 미포함)
+        const response = await api.post('/auth/register', data);
         return response.data;
     },
 
-    register: async (data: { email: string; password: string; name: string }) => {
-        const response = await api.post<{ user: User; token: string }>('/auth/register', data);
+    login: async (data: LoginData) => {
+        const response = await api.post('/auth/login', data);
         return response.data;
-    },
-
-    getProfile: async () => {
-        const response = await api.get<User>('/auth/profile');
-        return response.data;
-    },
+    }
 };
