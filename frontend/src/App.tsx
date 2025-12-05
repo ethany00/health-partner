@@ -7,17 +7,21 @@ import Register from './pages/auth/Register';
 import Matching from './pages/matching/Matching';
 import Chat from './pages/chat/Chat';
 import Profile from './pages/profile/Profile';
+import { MobileLayout } from './components/layout/MobileLayout';
+import { BottomNavigation } from './components/common/BottomNavigation';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 }
 
-function App() {
+const AppContent = () => {
+    const { isAuthenticated } = useAuthStore();
+
     return (
-        <BrowserRouter>
-            <div className="min-h-screen bg-gray-50">
-                <Header />
+        <MobileLayout>
+            <Header />
+            <main className="flex-1 w-full overflow-y-auto bg-slate-50 relative pb-4 scrollbar-hide">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
@@ -47,7 +51,16 @@ function App() {
                         }
                     />
                 </Routes>
-            </div>
+            </main>
+            {isAuthenticated && <BottomNavigation />}
+        </MobileLayout>
+    );
+};
+
+function App() {
+    return (
+        <BrowserRouter>
+            <AppContent />
         </BrowserRouter>
     );
 }
