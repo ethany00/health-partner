@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -14,12 +11,97 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 사용자 성별 Enum
+enum Gender {
+  MALE
+  FEMALE
+}
+
+// 운동 경력 Enum
+enum Career {
+  BEGINNER      // 헬린이 (1년 미만)
+  INTERMEDIATE  // 중급자 (1~3년)
+  ADVANCED      // 고수 (3년 이상)
+  PRO           // 트레이너/선수
+}
+
+// 매칭 상태 Enum
+enum MatchingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  password           String
+  name               String?
+  gender             Gender?
+  age                Int?
+  region             String?   // 주요 활동 지역 (예: 서울 강남구)
+  career             Career    @default(BEGINNER)
+  bio                String?   // 자기소개
+  profileImage       String?   // 프로필 이미지 URL
   hashedRefreshToken String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // 매칭 관계
+  sentMatches     Matching[] @relation("SentMatches")
+  receivedMatches Matching[] @relation("ReceivedMatches")
+
+  // 채팅 관계
+  chatRooms UserChatRoom[]
+  messages  Message[]
+}
+
+// 매칭 요청 테이블
+model Matching {
+  id          Int            @id @default(autoincrement())
+  requesterId Int
+  receiverId  Int
+  status      MatchingStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  requester User @relation("SentMatches", fields: [requesterId], references: [id])
+  receiver  User @relation("ReceivedMatches", fields: [receiverId], references: [id])
+
+  @@unique([requesterId, receiverId]) // 중복 요청 방지
+}
+
+// 채팅방
+model ChatRoom {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  users    UserChatRoom[]
+  messages Message[]
+}
+
+// 사용자-채팅방 다대다 연결 (참여자 관리)
+model UserChatRoom {
+  userId     Int
+  chatRoomId Int
+  joinedAt   DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id])
+
+  @@id([userId, chatRoomId])
+}
+
+// 채팅 메시지
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  senderId   Int
+  chatRoomId Int
+  createdAt  DateTime @default(now())
+  isRead     Boolean  @default(false)
+
+  sender   User     @relation(fields: [senderId], references: [id])
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id])
 }

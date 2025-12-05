@@ -42,24 +42,38 @@ export default function Profile() {
         { icon: HelpCircle, label: '고객센터', onClick: () => alert('준비 중입니다.') },
     ];
 
+    const getCareerLabel = (career?: User['career']) => {
+        switch (career) {
+            case 'BEGINNER': return '헬린이';
+            case 'INTERMEDIATE': return '중급자';
+            case 'ADVANCED': return '고수';
+            case 'PRO': return '전문가';
+            default: return '운동 경력 미설정';
+        }
+    };
+
     if (loading) return <div className="flex justify-center items-center h-full min-h-[500px]">로딩 중...</div>;
 
     return (
         <div className="pb-10">
             {/* Header Profile Section */}
             <div className="relative bg-white pt-6 pb-8 px-6 text-center shadow-sm border-b border-slate-100">
-                <div className="mx-auto w-24 h-24 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg mb-4 ring-4 ring-blue-50">
-                    <UserIcon size={40} />
+                <div className="mx-auto w-24 h-24 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg mb-4 ring-4 ring-blue-50 overflow-hidden">
+                    {user?.profileImage ? (
+                        <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                        <UserIcon size={40} />
+                    )}
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900">{user?.name || '사용자'}</h2>
-                <p className="text-slate-500 text-sm mt-1">{user?.email}</p>
+                <p className="text-slate-500 text-sm mt-1">{user?.bio || user?.email}</p>
 
                 <div className="mt-6 flex justify-center gap-2">
                     <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold">
-                        초급 헬린이
+                        {getCareerLabel(user?.career)}
                     </span>
                     <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-semibold">
-                        서울 강남구
+                        {user?.region || '지역 미설정'}
                     </span>
                 </div>
             </div>
